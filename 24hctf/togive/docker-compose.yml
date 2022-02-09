@@ -1,0 +1,62 @@
+version: "3.8"
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: ./app/Dockerfile
+    environment:
+      mysql_pass: 'mysqlp4ss'
+      PUBLIC_KEY: 'pubk3y'
+      PRIVATE_KEY: 'pr1vk3y'
+      DOMAIN: 'localhost'
+    image: keepme
+    ports:
+      - "80:5000"
+    depends_on:
+      - db
+    restart: always
+    dns:
+      - "127.0.0.11"
+      - "8.8.8.8"
+    networks:
+      - shisuinet
+
+  db:
+    platform: linux/x86_64
+    image: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_ROOT_PASSWORD: 'dbp4ssw0rd'
+      MYSQL_DATABASE: 'l33k'
+    dns:
+      - "127.0.0.11" 
+      - "8.8.8.8"
+    volumes:
+      - ./db:/docker-entrypoint-initdb.d
+    restart: always
+    networks:
+      - shisuinet
+
+  bot:
+    build:
+      context: .
+      dockerfile: ./bot/Dockerfile
+    image: bot
+    environment:
+      username: 'kahla'
+      password: 'p4ssw0rd'
+      DOMAIN: 'localhost' 
+    restart: always
+    dns:
+      - "127.0.0.11" 
+      - "8.8.8.8"
+    networks:
+      - shisuinet
+
+networks:
+  shisuinet:
+    ipam:
+      config:
+        - subnet: 172.16.0.0/24
+          gateway: 172.16.0.1
