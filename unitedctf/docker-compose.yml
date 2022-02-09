@@ -1,0 +1,402 @@
+version: "2.4"
+
+services:
+  # CRYPTO
+  crypto_padding_oracle:
+    image: acrctf.azurecr.io/crypto_padding_oracle
+    build:
+      context: "./crypto/paddingoracle"
+    restart: "unless-stopped"
+    cpus: 0.25
+    mem_limit: 512m
+    environment:
+      - NODE_ENV=production
+      - PORT=5000
+
+      - FLAG=FLAG-TOO_MANY_ERRORS_TOO_MANY_DETAILS
+    ports:
+      - 11111:5000
+
+  crypto_blind_padding_oracle:
+    image: acrctf.azurecr.io/crypto_blind_padding_oracle
+    build:            
+      context: "./crypto/blindpaddingoracle"
+    restart: "unless-stopped"
+    cpus: 0.25
+    mem_limit: 512m
+    environment:
+      - NODE_ENV=production
+      - PORT=5000
+
+      # Change me if too much latency
+      - SLEEP_TIME=0
+      - FLAG=FLAG-SHOULD_HAVE_USED_ENC_THEN_MAC_INSTEAD
+    ports:
+      - 11112:5000
+
+  crypto_vaxinull:
+    image: acrctf.azurecr.io/crypto_vaxinull
+    build:
+      context: "./crypto/vaxinull"
+    restart: "unless-stopped"
+    cpus: 0.25
+    mem_limit: 512m
+    environment:
+      PORT: 4200
+      ENVIRONMENT: "production"
+    entrypoint: ["npm", "start"]
+    ports:
+      - 4200:4200
+
+  # PROGRAMMING
+  programming_battleship:
+    image: acrctf.azurecr.io/programming_battleship
+    build:
+      context: "./programming/battleship"
+    restart: "unless-stopped"
+    cpus: 0.25
+    mem_limit: 512m
+    environment:
+      - NODE_ENV=production
+      - VERSION=0.0.2
+      - PORT=5000
+
+      - CHANCE_FOR_WAVE=0.15
+      - TIMEOUT=120000
+
+      - FLAG_1=FLAG-MMM_THERE_HAS_TO_BE_A_TRICK_TO_IT
+      - FLAG_5=FLAG-ALL_YOUR_SHIPS_ARE_BELONG_TO_US
+    ports:
+      - 12345:5000
+
+  programming_esolang:
+    image: acrctf.azurecr.io/programming_esolang
+    build:
+      context: "./programming/esolang"
+    restart: "unless-stopped"
+    cpus: 0.25
+    mem_limit: 512m
+    environment:
+      PORT: 1476
+      ENVIRONMENT: "production"
+    entrypoint: ["npm", "start"]
+    ports:
+      - 1476:1476
+
+  programming_redos:
+    image: acrctf.azurecr.io/programming_redos
+    build:
+      context: "./programming/redos"
+    restart: "unless-stopped"
+    cpus: 2
+    mem_limit: 1024m
+    command: python3 ./launch_server.py
+    ports:
+      - 31337:31337
+
+  programming_timingattack:
+    image: acrctf.azurecr.io/programming_timingattack
+    build:
+      context: "./programming/timingattack"
+    restart: "unless-stopped"
+    cpus: 0.25
+    mem_limit: 512m
+    ports:
+      - 10010:80
+
+  # PWN
+  pwn_simple_notes:
+    image: acrctf.azurecr.io/pwn_simple_notes
+    build:
+      context: "./pwn/simple_notes"
+    restart: "unless-stopped"
+    cpus: 0.25
+    mem_limit: 512m
+    ports:
+     - 1234:9999
+
+  # REVERSE
+  reverse_character_customization:
+    image: acrctf.azurecr.io/reverse_character_customization
+    build:
+      context: "./reverse/character_customization/private"
+    restart: "unless-stopped"
+    cpus: 0.25
+    mem_limit: 512m
+    environment:
+      - SERVER_PORT=9003
+      - URL=0.0.0.0
+      - PROGRAM_NAME=character_customization
+    ports:
+      - 9003:9003
+
+  # WEB
+  web_api1_nosqli:
+    image: acrctf.azurecr.io/web_api1_nosqli
+    build: "./web/api1_nosqli"
+    restart: unless-stopped
+    cpus: 0.25
+    mem_limit: 512m
+    environment:
+      - FLAG=FLAG-No5QL_D0ESNT_M3AN_N0_SQLi
+      - MONGO_INITDB_DATABASE=db
+      - MONGO_URL=mongodb://admin:46UeIA53nSKeeeryixbu@web_apix_mongo:27017/db?authSource=admin&readPreference=primary&directConnection=true&ssl=false
+    ports:
+      - 3000:3000
+    external_links:
+      - web_apix_mongo
+    depends_on:
+      - web_apix_mongo
+
+  web_api2_packagevulnerability:
+    image: acrctf.azurecr.io/web_api2_packagevulnerability
+    build: "./web/api2_packagevulnerability"
+    restart: unless-stopped
+    cpus: 0.25
+    mem_limit: 512m
+    environment:
+      - MONGO_INITDB_DATABASE=db
+      - MONGO_URL=mongodb://admin:46UeIA53nSKeeeryixbu@web_apix_mongo:27017/db?authSource=admin&readPreference=primary&directConnection=true&ssl=false
+    ports:
+      - 9002:9002
+    external_links:
+      - web_apix_mongo
+    depends_on:
+      - web_apix_mongo
+
+  web_apix_mongo:
+    image: mongo
+    restart: unless-stopped
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=46UeIA53nSKeeeryixbu
+      - MONGO_INITDB_DATABASE=db
+
+  web_cookies:
+    image: acrctf.azurecr.io/web_cookies
+    build:
+      context: "./web/cookies"
+    restart: "unless-stopped"
+    cpus: 0.25
+    mem_limit: 512m
+    ports:
+      - 10000:80
+
+  web_hackertools:
+    image: acrctf.azurecr.io/web_hackertools
+    build:
+      context: "./web/hackertools"
+    restart: "unless-stopped"
+    cpus: 2
+    mem_limit: 1024m
+    environment:
+      PORT: 1337
+      ENVIRONMENT: "production"
+    entrypoint: ["npm", "start"]
+    ports:
+      - 1337:1337
+    healthcheck:
+      test: curl -m 5 -f http://localhost:1337/healthcheck || kill 1
+      interval: 30s
+      timeout: 3s
+
+  web_pastagen:
+    image: acrctf.azurecr.io/web_pastagen
+    build:
+      context: "./web/pastagen"
+    restart: unless-stopped
+    cpus: 0.25
+    mem_limit: 512m
+    ports:
+      - 10011:80
+
+  web_sqli1:
+    image: acrctf.azurecr.io/web_sqli1
+    build:
+      context: "./sqli/sqli1"
+    restart: "unless-stopped"
+    cpus: 0.25
+    mem_limit: 512m
+    ports:
+      - 9998:80
+
+  web_sqli2:
+    image: acrctf.azurecr.io/web_sqli2
+    build:
+      context: "./sqli/sqli2"
+    restart: "unless-stopped"
+    cpus: 0.25
+    mem_limit: 512m
+    ports:
+      - 9999:80
+
+  web_sqli3:
+    image: acrctf.azurecr.io/web_sqli3
+    build:
+      context: "./sqli/sqli3"
+    restart: "unless-stopped"
+    cpus: 0.25
+    mem_limit: 512m
+    ports:
+      - 10003:80
+
+  web_sqli4:
+    image: acrctf.azurecr.io/web_sqli4
+    build:
+      context: "./sqli/sqli4"
+    restart: "unless-stopped"
+    cpus: 0.25
+    mem_limit: 512m
+    ports:
+      - 10004:80
+
+  web_sqli5:
+    image: acrctf.azurecr.io/web_sqli5
+    build:
+      context: "./sqli/sqli5"
+    restart: "unless-stopped"
+    cpus: 0.25
+    mem_limit: 512m
+    ports:
+      - 10005:80
+
+  web_sqli6:
+    image: acrctf.azurecr.io/web_sqli6
+    build:
+      context: "./sqli/sqli6"
+    restart: "unless-stopped"
+    cpus: 0.25
+    mem_limit: 512m
+    ports:
+      - 10006:80
+
+  web_sqli7:
+    image: acrctf.azurecr.io/web_sqli7
+    build:
+      context: "./sqli/sqli7"
+    restart: "unless-stopped"
+    cpus: 0.25
+    mem_limit: 512m
+    ports:
+      - 10007:80
+
+  web_sqli8:
+    image: acrctf.azurecr.io/web_sqli8
+    build:
+      context: "./sqli/sqli8"
+    restart: "unless-stopped"
+    cpus: 0.25
+    mem_limit: 512m
+    ports:
+      - 10008:80
+
+  web_sqli9:
+    image: acrctf.azurecr.io/web_sqli9
+    build:
+      context: "./sqli/sqli9"
+    restart: "unless-stopped"
+    cpus: 0.25
+    mem_limit: 512m
+    ports:
+      - 10009:80
+
+  web_storengo:
+    image: acrctf.azurecr.io/web_storengo
+    build:
+      context: "./web/storengo"
+    restart: "unless-stopped"
+    cpus: 0.25
+    mem_limit: 512m
+    environment:
+      - FTP_PASV_MIN=5002
+      - FTP_PASV_MAX=5100
+      - FTP_PASV_IP=127.0.0.1
+      - FTP_PORT=5001
+      - HTTP_PORT=5000
+    ports:
+      - 5000-5100:5000-5100
+
+  web_upload1:
+    image: acrctf.azurecr.io/web_upload1
+    build:
+      context: "./web/upload1"
+    restart: "unless-stopped"
+    cpus: 0.25
+    mem_limit: 512m
+    ports:
+      - 10020:80
+
+  web_upload2:
+    image: acrctf.azurecr.io/web_upload2
+    build:
+      context: "./web/upload2"
+    restart: "unless-stopped"
+    cpus: 0.25
+    mem_limit: 512m
+    ports:
+      - 10021:80
+
+  web_upload3:
+    image: acrctf.azurecr.io/web_upload3
+    build:
+      context: "./web/upload3"
+    restart: "unless-stopped"
+    cpus: 0.25
+    mem_limit: 512m
+    ports:
+      - 10022:80
+
+  web_upload4:
+    image: acrctf.azurecr.io/web_upload4
+    build:
+      context: "./web/upload4"
+    restart: "unless-stopped"
+    cpus: 0.25
+    mem_limit: 512m
+    ports:
+      - 10023:80
+
+  web_plusbassoumissionnaire:
+    image: acrctf.azurecr.io/web_plusbassoumissionnaire
+    build:
+      context: "./web/plusbassoumissionnaire"
+    restart: "unless-stopped"
+    cpus: 0.25
+    mem_limit: 512m
+    ports:
+      - 10025:80
+
+  web_wasm1:
+    image: acrctf.azurecr.io/web_wasm1
+    build:
+      context: "./web/wasm"
+    restart: "unless-stopped"
+    cpus: 0.25
+    mem_limit: 512m
+    environment:
+      PORT: 6969
+      ENVIRONMENT: "production"
+    healthcheck:
+      test: curl -f http://localhost:6969/healthcheck || false
+      interval: 60s
+      timeout: 3s
+    ports:
+      - 6969:6969
+
+  web_wasm2:
+    image: acrctf.azurecr.io/web_wasm2
+    build:
+      context: "./web/wasm2"
+    restart: "unless-stopped"
+    cpus: 0.25
+    mem_limit: 512m
+    environment:
+      PORT: 9696
+      ENVIRONMENT: "production"
+    healthcheck:
+      test: curl -f http://localhost:9696/healthcheck || false
+      interval: 60s
+      timeout: 3s
+    entrypoint: ["npm", "run", "dev"]
+    ports:
+      - 9696:9696

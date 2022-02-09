@@ -1,0 +1,19 @@
+version: "3"
+
+services:
+  hackertools:
+    container_name: hackertools
+    ports:
+      - "1337:1337"
+    environment:
+      PORT: 1337
+      ENVIRONMENT: "production"
+    build:
+      context: .
+      dockerfile: Dockerfile
+    entrypoint: ["npm", "start"]
+    restart: always
+    healthcheck:
+      test: curl -m 5 -f http://localhost:1337/healthcheck || kill 1
+      interval: 30s
+      timeout: 3s
