@@ -4,7 +4,8 @@ COPY files/html /var/www/html
 COPY files/my_very_special_script.c /
 COPY files/flag.txt /home/admin/flag.txt
 ENV FLAG4 FLAG{4_good_job_devient_root_maintenant}
-RUN << eot
+ENV FLAG3 FLAG{3_you_get_a_token_you_get_a_token_you_get_a_token}
+RUN <<eot
 useradd -ms /bin/bash admin
 gcc /my_very_special_script.c -o /my_very_special_script.o
 chmod +s /my_very_special_script.o
