@@ -9,7 +9,7 @@ services:
       - MONGO_INITDB_DATABASE=api1
       - MONGO_URL=mongodb://admin:46UeIA53nSKeeeryixbu@mongo:27017/api1?authSource=admin&readPreference=primary&directConnection=true&ssl=false
     ports:
-      - '3000:3000'
+      - '1337:3000'
     external_links:
       - mongo
   mongo:
