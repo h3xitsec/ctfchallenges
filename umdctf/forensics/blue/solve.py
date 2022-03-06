@@ -1,3 +1,4 @@
+#! /usr/bin/env python
 from PIL import Image
 def compare_lines(img,line1,line2):
     return set(get_line(img,line1)) - set(get_line(img,line2))
