@@ -45,7 +45,6 @@ for y in range(charcount):
         pixel = list(line[i])
         linetotal = linetotal + (pixel[0] + pixel[1] + pixel[2])
     charcode = linetotal - ref
-    print(charcode)
     flag = flag + chr(charcode)
 
-print(flag)
+print('Flag: ' + flag)
