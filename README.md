@@ -11,7 +11,7 @@ This repo contains multiples CTF challenges from various sources
 
 - The whole thing
 
-## HTB 2022 CyberSanta
+## HTB 2022 CyberSantagit 
 
 - Gadget Santa
 - Naughty Or Nice
