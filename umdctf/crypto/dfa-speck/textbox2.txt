@@ -1,0 +1,6 @@
+7766554433221100 ffeeddccbbaa9988
+              ||
+             /  \
+    MSB  0000    0000  LSB
+           ^
+           faulted bit (aka flipped from original value)
